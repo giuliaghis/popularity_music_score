@@ -13,12 +13,9 @@ Moreover, using different regression techniques, we aim to provide the company w
 ![Flowchart.png](Plots%2FFlowchart.png)
 
 ### 2.1 Environment
-The deliverable is divided into a MAIN.ipynb file, which is a file Jupyter Notebook where we wrote all the code, and this file README.md, where we wrote the report.
+The deliverable is divided into a MAIN.ipynb file, which is a file Jupyter Notebook where we wrote all the code, and this file README.md, where we wrote the report. Furthermore, all the plots displayed in this report will be provided in a separate folder. This will allow them to be easily accessed and displayed within this document as needed.
 
-In addition, we will provide all the plots used in this report in the folder, in order to be able to be displayed in this file accordingly.
-
-For dealing with the data, we used the libraries Pandas and Numpy, while for the visualizations, we used both the library Seaborn and the library Matplotlib.
-Finally, we mostly used the library Sklearn for all the clustering and regression models, as well as the metrics we used. 
+We utilized Pandas and NumPy libraries for data processing, while Seaborn and Matplotlib libraries were employed for data visualization purposes. The Sklearn library played a significant role in implementing clustering and regression models, as well as evaluating the metrics we utilized.
 
 The code is implemented for Python 3.7 and above. 
 
@@ -32,14 +29,13 @@ Initially, we discovered that some track_ids were repeated in the data. Further 
 Then, we conducted descriptive statistics and visualizations to explore the distributions of and correlations between various features of the songs.
 
 Firstly, we calculated descriptive statistics and format each statistic as a float with a fixed number of decimal places. As a result, we noticed that song's features variables such has tempo or loudness have a different range of values which are much higher than the others, whose values are mostly between 0 and 1.
-
 ![descriptive_statistics.png](Plots%2Fdescriptive_statistics.png)
 
 Secondly, we wanted to explore the correlations among variables. For this purpose, we plotted a heatmap. We found out that most of the variables are not correleted, with the exception of:
 - "acousticness" and "energy", which are highly negatively correlated. This is probably because tracks that have a lot of acoustic sounds tend to be more mellow and subdued, which would result in low energy values. Conversely, tracks that have more electronic sounds might be more energetic and upbeat, resulting in high energy values.
 - "loudness" and "energy", which are highly positively correlated. Loudness is a measure of the sound pressure level of a track, while energy is a perceptual measure of the intensity and activity of a track. Therefore, the high correlation is reasonable, as both measures are related to the subjective impression of the track being "loud" or "powerful".
 ![corr.png](Plots%2Fcorr.png)
-- 
+
 Then, we decided to explore the distributions of each numerical variable in our dataset. So, we created a histogram for each one, to show the distribution of its values. Thanks to this plot we could notice that most of the variables are not normally distributed and could gain few relevant insights:
 - From the "energy" histogram, we notice that songs tend to have higher levels of energy. The higher levels of energy observed in the histogram indicate that the analyzed songs in the dataset generally exhibit a greater sense of intensity, liveliness, and higher perceived activity. These songs are likely to have more energetic elements, such as a strong rhythm, prominent beats, and a more intense sound overall. However, it's important to consider that the energy attribute is a subjective measure and may vary based on individual perception and interpretation.
 - Most of the tracks in the dataset have a speechiness value of 0, indicating a lack of spoken words or vocals in the music. Interestingly, instrumentalness, which measures the extent to which a track consists of instrumental sounds without any vocal content, also predominantly has a value of 0. The calculation methods for these metrics are not explicitly clear, as speechiness should represent the amount of text in songs, while instrumentalness should represent the amount of instrumental sound. However, it is worth noting that these two variables are not negatively correlated and exhibit similar distributions, which raises questions about their accurate representation and calculation methods They may not perfectly capture the nuances of speech or instrumental elements in every track.
@@ -57,7 +53,7 @@ Then, we wanted to explore the distribution of what will be our target variable 
 Additionally, we displayed the top 5 artists per count. As a result we obtained that The Beatles, George Jones, Stevie Wonder, Linkin Park, and Ella Fitzgerald are the most prominent artists based on the frequency of their appearances. They have been featured most frequently in the dataset, highlighting their prominence in the music's context.
 ![top_5_artists.png](Plots%2Ftop_5_artists.png)
 
-Moreover, we decided to explore which where the top 10 track genres in our dataset. Therefore, we first calculated the average popularity for each track_genre and get the first 10. Then, we plotted a bar plot showing the top 10 genres ranked by average popularity. Theis analysis reveals that the audience has diverse and eclectic music tastes. Pop-film is the most popular genre, followed by K-Pop, chill music, and sad music.  Indian music and anime music also rank high, showing a preference for traditional and culturally significant music and music associated with Japanese media. What is surprising is the presence of Sertanejo music, a popular genre in Brazil, that also seems to have a significant following among the  audience.
+Moreover, we decided to explore which where the top 10 track genres in our dataset. Therefore, we first calculated the average popularity for each track_genre and get the first 10. Then, we plotted a bar plot showing the top 10 genres ranked by average popularity. This analysis reveals that the audience has diverse and eclectic music tastes. Pop-film is the most popular genre, followed by K-Pop, chill music, and sad music.  Indian music and anime music also rank high, showing a preference for traditional and culturally significant music and music associated with Japanese media. What is surprising is the presence of Sertanejo music, a popular genre in Brazil, that also seems to have a significant following among the  audience.
 ![top_10_genres.png](Plots%2Ftop_10_genres.png)
 
 Also, we wanted to investigate whether the majority of the songs were explicit or not. In order to do so, we displayed in a countplot the percentages of explicit and not explicit songs. More than 90% of the songs in the dataset are not marked as explicit, which indicates that the vast majority of the songs are suitable for all audiences, without any explicit or mature content.
@@ -106,115 +102,99 @@ We decided to re-run descriptive statistics on this new dataset to assess if the
 We started with a split of 80% in training set and 20% in test set.
 
 After the splitting we proceeded with the encoding of the categorical variables.
-We used two different types of encoding techniques: multi label Binarizer and leave on out encoding.
+We used two different types of encoding techniques: Multi Label Binarizer and Leave One Out encoding.
 
-Multi Label Binarizer is a type of encoding similar to one hot encoding, but it is used in data with multiple labels as it enables to encode multiple labels per instance. Indeed, the variable genre in our dataset is comprised of a list of genres associated to every song, which meant that a simple one hot encoding was not going to be enough. However, with Multi Label Binarizer, we were able to encode all the genres in the list, so that we could keep all the information.
-
-For the other two categorical variables, artists and album_name, we decided to use leave one out encoding. 
-At first we thought about one hot encoding, but it would have been too computationally expensive to have so many variables, as both artists and album_name had a high cardinality; we also thought about label encoding, we were not comfortable with assigning an order to our data that did not apparently have one.
-Therefore, we settled for a leave one out encoding. Leave one out encoding works like a target encoding, meaning that replaces the value of each category level of a categorical variable with their respective mean of the target variable (thus we used the mean of the popularity), although is does not include the value in the current row. In this way, while target encoding has limitations because it might be prone to data leakage and overfitting, leave one out has a regularisation effect, which reduces the risk of overfitting as it makes the encoding less dependent on the target variable.  
+- MultiLabelBinarizer is an encoding technique similar to One Hot encoding but specifically designed for data with multiple labels. In our dataset, the "genre" variable consists of a list of genres associated with each song, making simple One Hot encoding inadequate. By using MultiLabelBinarizer, we were able to encode all the genres in the list, preserving all the relevant information.
+- For the "artists" and "album_name" variables, we opted for Leave One Out encoding. Initially, we considered One Hot encoding, but due to the high cardinality of both variables, it would have resulted in a large number of encoded variables, leading to computational inefficiency. We also considered label encoding; however, since there was no apparent order in the data, we were hesitant to assign arbitrary numeric values. Therefore, Leave One Out encoding was chosen as it strikes a balance between information preservation and computational feasibility, allowing us to encode the categorical variables effectively without losing significant details. Leave One Out encoding operates similarly to target encoding, where each category level of a categorical variable is replaced with the mean value of the target variable (in this case, the mean popularity). However, Leave One Out encoding excludes the value in the current row when calculating the mean. This technique effectively reduces the risk of overfitting compared to standard target encoding, as it introduces a regularization effect. By utilizing Leave One Out encoding, we were able to encode the "artists" and "album_name" variables effectively, leveraging the regularization effect to reduce overfitting while still capturing the important information within the categorical variables.
 
 ### 2.5 Clustering
 
-Regarding K-Means clustering, we did it on both the entire dataset and then on only the training set.
-In both cases, we only considered the song features, also excluding the popularity, as in our opinion it does not really constitute a feature of a song. 
+We performed K-Means clustering on both the entire dataset and the training set. In both cases, we focused solely on song features, excluding the "popularity" variable, as we considered it not to be a defining characteristic of a song.
 
-Moreover, we used 114 clusters, which are the unique values of the variable track_genre, in order to understand whether the genre could have been an objectively measurable variable.
+For the clustering analysis, we utilized 114 clusters, which corresponded to the unique values of the "track_genre" variable. Our objective was to investigate whether genre could be objectively measurable based on the clustering results.
 
-After the clustering, we added another variable in both datasets, called "cluster", where we reported for each data point the cluster that point belonged to. Our aim was understanding the distribution of songs in the clusters, and whether they might be unbalanced.
+Following the clustering process, we added a new variable called "cluster" to both datasets. This variable indicated the cluster to which each data point belonged. Our intention was to examine the distribution of songs across the clusters and assess any potential imbalances.
 
-Finally, we used the Silhouette score to assess the performance of the clustering.
+To evaluate the quality of the clustering, we employed the Silhouette score. This metric allowed us to assess the coherence and distinctiveness of the clusters generated by the algorithm
 
 ### 2.6 Regression
 
-For what regards the regression models, we proceeded with trying many algorithms and evaluating them based on metrics such as R-Squared and Root Mean Square Error.
+In our regression analysis, we explored multiple algorithms and assessed their performance using key metrics such as R-Squared and Root Mean Square Error (RMSE).
 
-Thus, we first started with a linear regression baseline model. We moved on to a Decision Tree Regressor and then to ensemble algorithms. 
-In particular we first tried a Random Forest Regressor and a Gradient Boosting Regressor. Then, we experimented with a Voting Regressor as well as a Stacking algorithm.
-Decision Tree, Random Forest and Gradient Boosting were optimized through a grid search, in order to find the best parameters.
- 
-For the models which we considered to be more important, we visualized plots regarding the residuals and the predicted values compared to the real values, so that we could understand better what the models were predicting.
+We began with a linear regression baseline model and then progressed to a Decision Tree Regressor. From there, tried ensemble algorithms. Our initial ensemble models included a Random Forest Regressor and a Gradient Boosting Regressor. Additionally, we experimented with a Voting Regressor and a Stacking algorithm.
 
-In the next section, we will expand more on why we chose those algorithms and metrics in particular, as well as how we implemented them. 
+To optimize the Decision Tree, Random Forest, and Gradient Boosting models, we utilized grid or random search to identify the best combination of hyperparameters.
+
+For the models we considered most significant, we visualized plots representing residuals and predicted values compared to the actual values, so that we could have a better understanding of the models' predictive capabilities.
+
+In the subsequent section, we will delve deeper into the rationale behind our algorithm and metric choices, as well as provide insights into the implementation details.
 
 ## 3. Experimental Design
 
 ### 3.1 Clustering
 
-First of all, we decided on the Silhouette Score as a metric because it provides a measure of how well the data points within each cluster are separated from other clusters, indicating the overall cohesion and separation of the clusters.
-Furthermore, the Silhouette Score is easily interpretable, which makes it very good for comparing different clustering solutions as in our case. 
+The Silhouette Score was chosen as a metric for evaluating the quality of the clustering because it provides insights into the cohesion and separation of data points within each cluster. It allows for easy interpretation and comparison of different clustering solutions. The Silhouette Score ranges from -1 to 1, where -1 indicates poor clustering with data points assigned to incorrect clusters, 0 suggests overlapping or poorly separated clusters, and 1 signifies well-clustered data points with distinct and cohesive clusters.
 
-Its range of values goes from -1 to 1, with -1 implying that the data points are incorrectly clustered or have been assigned to the wrong clusters, suggesting that the clustering solution is poor and the data points would be better assigned to a different cluster or treated as outliers.
-A silhouette score of 0 indicates that there are overlapping or poorly separated clusters, and that the data points may not be clearly assigned to their respective clusters, leading to some degree of ambiguity or overlap between clusters.
-Finally, a silhouette score of 1 indicates that the data points are well-clustered, with clear separation between clusters and high cohesion within clusters, meaning that the clustering solution is appropriate and the clusters are distinct.
+Initially, we applied clustering to the full dataset by scaling the variables and fitting the clustering algorithm with the chosen number of clusters (K). Upon analyzing the resulting "cluster" variable, we observed that while some clusters had a high number of data points, many clusters contained fewer than 10 data points. Despite this imbalance, the Silhouette Score indicated moderate quality clustering, although the clusters were not entirely distinct.
 
-Therefore, we first tried the clustering on the full dataset: we first scaled the variables, then we fitted the clustering with the chosen K.
-
-We then looked at the new variable "cluster", and noticed that, while there were many clusters with a very high number of values, there werwe also many that had less than 10 data points.
-However, when we calculated the Silhouette score, it looked like the clusters were of a moderate quality, although not entirely distinct.
-
-For these reasons, we were curious as to whether using a smaller sample might help in getting a higher clustering quality. 
-We repeated the exact same steps as before but using the X_train dataframe, removing the variables we did not need and then fitting the clustering. 
-
-Of course, the clusters exhibited the same pattern as before, because there were still many with a low number of data points. In retrospect, we should not have expected this to change, as reducing the sample was only going to exacerbate this problem.
-Indeed, when we computed the Silhouette score, it was clear that not only had undersampling not improved the clustering, it had even slightly worsened it.
-
+To explore the possibility of improving clustering quality, we wondered if using a smaller sample might yield better results. We repeated the same steps using the X_train dataframe, excluding unnecessary variables and fitting the clustering algorithm. However, the clusters exhibited the same pattern as before since undersampling exacerbated the issue of low data points in certain clusters.In retrospect, it was unrealistic to expect this issue to be resolved by reducing the sample size. As anticipated, undersampling further decreased the clustering quality, as evidenced by a slightly lower Silhouette Score.
 
 ### 3.2 Regression
 
-As mentioned above, in order to evaluate out models, we chose the R-Squared and the Root Mean Square Error.
+To evaluate our regression models, we selected two key metrics: R-Squared and Root Mean Square Error (RMSE).
 
-The reasons why we have decided to use the R-Squared are two-fold: first, for its straightforward interpretation, as it ranges from 0 to 1, where 0 indicates that the model explains none of the variability in the data, and 1 indicates that the model explains all the variability. In this way, it provides a simple and intuitive way to communicate the explanatory power of the regression model.
-Second, because R-squared allows for easy comparison of different models, since when comparing multiple regression models, the model with a higher R-squared value is generally considered to have a better fit to the data.
+- R-Squared was chosen for its straightforward interpretation. It ranges from 0 to 1, where 0 indicates that the model explains none of the variability in the data, and 1 indicates that the model explains all the variability. In this way, this metric provides an intuitive measure of the regression model's explanatory power. Additionally, R-Squared facilitates the comparison of different models, as a higher R-Squared value suggests a better fit to the data. However, R-Squared does have its limitations. It can be influenced by the number of independent variables and may give misleading interpretations in the presence of multicollinearity or violations of other model assumptions. Therefore, to gain a more comprehensive understanding of model performance, we complemented R-Squared with the Root Mean Square Error.
+- The RMSE metric was considered suitable for our analysis because it shares the same unit of measurement as the dependent variable, in this case, "popularity." This allows for easy interpretation of the error metric within the context of the problem. RMSE provides a direct understanding of the average prediction error in the same units as the target variable.
 
-However, the R-Squared still does have its limitations, as it can be influenced by the number of independent variables, and its interpretation may be misleading in the presence of multicollinearity or other model assumptions violations. Therefore, we thought it best to use it in conjunction with another metric: the Root Mean Square Error. 
-
-This metric in our case can be a very suitable choice, because the RMSE has the same unit of measurement as the dependent variable, popularity, which makes it easier to interpret the error metric in the context of the problem and provides a direct understanding of the average prediction error in the same units as the target variable.
+By utilizing both R-Squared and RMSE, we aimed to gain insights into the explanatory power of the models (R-Squared) as well as the average prediction error (RMSE) in relation to the "popularity" variable. This combination of metrics provides a more comprehensive evaluation of the regression models' performance.
 
 #### 3.2.1 Linear Regression
-We first decided to try with a linear regression as baseline, since it is a simple and computationally efficient algorithm which is easily interpretable. Moreover, by comparing the results of more advanced models to those of linear regression, we can assess whether the additional complexity of the advanced models leads to significant improvements.
-Linear regression gave moderately good results, resisting overfitting and providing a good baseline. However, its assumptions of linearity, and the perhaps too simple model led us to try with other, more complex algorithms. 
+
+We started by implementing a Linear Regression model as a baseline.
+
+The Linear Regression model is a simple and computationally efficient algorithm with easy interpretability. By comparing the results of more advanced models to the Linear Regression baseline, we can assess whether the additional complexity of the advanced models leads to significant improvements.
+
+The Linear Regression model produced moderately good results, avoiding overfitting and providing a solid baseline. However, the model's assumptions of linearity and its simplicity prompted us to explore other, more complex algorithms.
 
 #### 3.2.2 Decision Tree Regressor
-Therefore, after Linear Regression, we tried with a Decision Tree Regressor model.
-We decided first on a Decision Tree because they can capture non-linear relationships and interactions between features without explicitly assuming a specific functional form. Moreover, compared to other more complex approaches they are more interpretable and more computationally efficient. 
-However, decision trees may struggle with capturing certain types of relationships that require more complex modeling approaches, which is probably why our results, despite the grid search, were so low. 
+
+After Linear Regression, we experimented with a Decision Tree Regressor model.
+
+Decision trees are capable of capturing non-linear relationships and interactions between features without imposing specific functional forms. Compared to more complex approaches, decision trees offer greater interpretability and computational efficiency. However, decision trees may struggle to capture certain types of relationships that require more sophisticated modeling techniques, which could explain our relatively low results despite using grid search for hyperparameter tuning.
 
 #### 3.2.3 Random Forest Regressor
-For this reason, we thought about a more complex algorithm, Random Forest, which combines multiple decision trees to make predictions. 
-Indeed, Random Forests often provide better predictive performance compared to individual decision trees, by aggregating the predictions from multiple trees. In general, they are less prone to overfitting compared to decision trees and they can handle large datasets very well. Finally, they are able to capture more complex relationships which decision trees might not be able to grasp, and thus we decided to use it, especially after the poor performance of the decision tree. 
 
-After running a grid search, which was very computationally expensive, we found the best hyperparameters and used them to fit the model. 
-However, despite the improvement in the performance, it looked like there was some overfitting in the data.
+Considering the limitations of the decision tree, we opted for a more complex algorithm, the Random Forest Regressor.
 
-From random forest, we also plotted the feature importance, which we used to better understand the variables which were more relevant for the predictions.
-It looked like the variable album_name was the most important one, directly followed by artists.
+Random Forests combine multiple decision trees to make predictions and, for this reason, they often exhibit superior predictive performance compared to individual decision trees. Random Forests are generally less prone to overfitting and handle large datasets effectively. Moreover, they excel at capturing complex relationships that decision trees might fail to capture. Given the poor performance of the decision tree, Random Forest was a suitable choice.
+
+Through a computationally expensive grid search, we identified the best hyperparameters and used them to fit the Random Forest model. Although the model's performance improved, we observed signs of overfitting.
+
+To gain insights about the importance of different features for predictions, we plotted the feature importance derived from the Random Forest model. The analysis revealed that the "album_name" variable held the highest importance, closely followed by the "artists" variable. The feature importance analysis regarding the "album_name" variable confirmed our belief that it was essential to consider not only songs from the original albums but also those present in playlists. This finding indicated that the inclusion of songs in a specific album played a significant role in determining the popularity of a song. Therefore, taking into account both the original albums and the playlists proved to be crucial in accurately analyzing popularity scores of songs.
 
 #### 3.2.4 Gradient Boosting Regressor
-Because of the overfitting of random forest, we wanted to try a different kind of ensemble learning, and we settled on Gradient Boosting. 
-In general, gradient boosting has a high predictive performance and handles very well non-linear relationships. Moreover, it should be more robust against overfitting.
 
-Despite this, gradient boosting is very computationally expensive, especially with large datasets and complex models, which made both the random search (we had to change to random search as the grid search was taking too long), and the model fitting take an important amount of time. 
+Due to the overfitting observed in the Random Forest model, we decided to explore a different type of ensemble learning algorithm, namely Gradient Boosting.
 
-Nevertheless, after the optimization, the results were pretty good, although it still looked a bit like it was overfitting.
+Gradient Boosting has generally high predictive performance and handles non-linear relationships effectively. Additionally, it is known to be more robust against overfitting. However, it is important to note that Gradient Boosting can be computationally expensive, especially with large datasets and complex models. As a result, both the random search (replaced the grid search due to its long execution time) and the model fitting process took a significant amount of time.
+
+Despite the computational cost, the optimized Gradient Boosting model yielded good results, although some overfitting was still observed.
 
 #### 3.2.5 Voting Regressor
-We noticed that although random forest was overfitting, the results were good. We needed a way to reduce the overfitting (and to find a model that was less computationally expensive than Gradient Boosting), and we realized that we could have combined the Random Forest model with the Linear Regression one, in a Voting Regressor.
 
-Indeed, because both models are very different from one another, by combining them in a Voting Regressor, we could leverage the strengths of each model and potentially improve overall prediction performance. Linear regression might be effective when the relationship between the features and the target variable is approximately linear, while random forest can capture non-linear relationships and interactions.
+To address the overfitting issue encountered in the Random Forest model while maintaining good performance, we decided to combine the Random Forest and Linear Regression models using a Voting Regressor.
 
-Indeed, the predictive performances were much better, and, most importantly, the model was not overfitting anymore.
+By leveraging the different strengths of the two models, the Voting Regressor allowed us to take advantage of Linear Regression's effectiveness in capturing approximately linear relationships and Random Forest's ability to handle non-linear relationships and interactions.
+
+The Voting Regressor significantly improved predictive performance, and importantly, mitigated the overfitting issue observed in the Random Forest model.
 
 #### 3.2.6 Stacking Regressor
-However, because the voting regressor had produced good results, we were interested to find out whether another method, Stacking, would also improve the performances.
 
-Again, we used random forest and linear regression, and we tried to improve the performance without sacrificing too much time. 
+Considering the success of the Voting Regressor, we further explored the potential improvement of performance using the Stacking Regressor.
 
-Stacking allows to combine the strengths of different models. As in voting regressor, by combining the predictions of Linear Regression and Random Forest, we can potentially capture different aspects of the underlying relationships in the data, leading to improved overall performance.
+Similar to the Voting Regressor, the Stacking Regressor combines predictions from multiple models, including Random Forest and Linear Regression, to capture different aspects of the underlying relationships in the data. This approach offers the potential for enhanced predictive performance compared to the Voting Regressor, as the combination of models is done in a more sophisticated manner.
 
-Moreover, Stacking has the potential to provide better predictive performance compared to Voting, by combining the predictions of multiple models in a more sophisticated way.
-
-In the end, the performance of the stacking regressor was good, although it looked like there was still a small amount of overfitting, despite the RMSE giving very good results. However, the model fitting was very slow, making it not the best choice. 
+Although the Stacking Regressor exhibited good performance with a low RMSE, there was still a slight amount of overfitting observed. However, the model fitting process was relatively slow, making it less preferable in terms of efficiency.
 
 ## 4. Results
 ### 4.1 Clustering
